@@ -304,7 +304,7 @@ class viewSalaryAPI(APIView):
         employee = EmployeeData.objects.get(name=emp_name)
         print(employee)
         salary_per_hour = employee.salary_per_hour
-        total_salary = (total_working_hours * salary_per_hour) + (total_working_minutes * (salary_per_hour/60))
+        total_salary = int((total_working_hours * salary_per_hour) + (total_working_minutes * (salary_per_hour/60)))
         print(total_salary)
             # print(work_schedule.end_time)
             # total_working_time += timedelta(work_schedule.end_time) - timedelta(work_schedule.start_time) - timedelta(minutes=work_schedule.lunch_break)
