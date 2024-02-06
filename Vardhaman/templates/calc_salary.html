@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+
+{% block title %}Calculate Salary Page{% endblock %}
+
+{% block content %}
+<style>
+	.table td, .table th {
+		vertical-align: middle;
+		padding: 5px;
+		font-size: 13px;
+	}
+
+	.table-input{
+		height:auto;
+		width:80px;
+	}
+
+	.selection{
+		padding: 5px;
+		font-size:10px;
+    	align-self: center;
+	}
+</style>
+<div class="main-container">
+	<div class="pd-ltr-20">
+	  <div class="container-fluid justify-content-between align-items-center">
+		<div>
+		  <h2>Calculate Salary</h2>
+		  <br />
+		  <div class="pd-20 card-box mb-30">
+			<div class="clearfix">
+			  <div class="pull-left"></div>
+			</div>
+			<form id="empInfo" method="post">
+				<div class="form-group row">
+					<label class="col-sm-12 col-md-2 col-form-label">Select</label>
+					<div class="col-sm-12 col-md-10" id="select-container">
+                    
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-12 col-md-2 col-form-label">Month</label>
+					<div class="col-sm-12 col-md-10">
+						<input class="form-control month-picker" placeholder="Select Month" type="text" name="month">
+					</div>
+				</div>
+
+				<table class="table table-bordered">
+					<thead>
+					  <tr>
+						<th scope="col">Date/Day</th>
+						<th scope="col">Start Time</th>
+						<th scope="col">End Time</th>
+						<th scope="col">Lunch Break</th>
+					  </tr>
+					</thead>
+					<tbody id="next-row">
+
+					</tbody>
+				  </table>
+															  
+				<div id="input-table" class="table table-bordered">
+
+				</div>
+				
+				<button type="button" class="btn btn-primary btn-lg btn p-10" onclick="submitForm()">Select</button>
+				<button type="button" class="btn btn-primary btn-lg btn p-10" onclick="submitTimeData()">Calculate Salary</button>
+			</form>
+		  </div>
+		</div>
+	  </div>
+	</div>
+  	</div>
+  	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	  <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            $.ajax({
+                type: 'GET',
+                url: 'displayEmployee',
+                success: function(response) {
+                    
+                    console.log(response);
+    
+                    var names = response.names;
+                    html = '<select class="custom-select col-12" name="emp_name">';
+                        for (var i = 0; i < names.length; i++) {
+                            html+= '<option value="'+names[i]+'">'+names[i]+'</option>';
+                        }
+                    html += "</select>";
+                    
+					$('#select-container').html(html);
+
+                    // Assuming you want to display the result in some element with id "result"
+                    //$('#result').text('Total Working Time: ' + response.total_working_hours + ' hours and ' + response.total_working_minutes + ' minutes');
+                },
+                error: function(error) {
+                    // Handle error
+                    console.error('Error:', error);
+                }
+            });
+
+		});
+    </script>
+	<script>
+		function submitForm(){
+			
+			var csrfToken = $('[name="csrfmiddlewaretoken"]').val();
+			var formData = $('#empInfo').serialize();
+			formData += '&csrfmiddlewaretoken=' + csrfToken;
+			event.preventDefault();
+			$.ajax({
+				type: 'POST',
+				url: 'selectEmpDataAPI',
+				data: formData,
+				success: function(response) {
+					console.log(response);
+					// Assuming response_data contains redirection_url, date_range, and day_range
+					//var redirection_url = response_data.redirection_url;
+					var date_range = response.date_range;
+					var day_range = response.day_range;
+					console.log(date_range);
+					console.log(day_range);
+					html ='';
+					for (var i = 0; i < date_range.length; i++) {
+					html +='<tr>';
+						html += '<th scope="row"><div style="display:flex; flex-direction:column;justify-content: center;padding-right: 20px;">'
+							html +=  '<div style="padding:1px">'+date_range[i]+'</div>' ;
+							html +=  '<div style="padding:1px">'+day_range[i]+'</div>' ;
+						html += '</div>'
+						html += '<th scope="row"><div style="display:flex; flex-direction:row;justify-content: space-around;">'
+								if (parseInt(response.start_times_hours[i]) > 12){
+									html +=  '<input class="form-control table-input" type="text" name="start_hour_'+date_range[i]+'" value="'+((response.start_times_hours[i]-12) || '')+'"/>';
+									html +=  '<input class="form-control table-input" type="text" name="starting_min_'+date_range[i]+'" value="'+(response.start_times_minutes[i] || '')+'"/>';
+									html +=  '<div class="btn-group btn-group-toggle" data-toggle="buttons">';
+									html +=	'<label class="btn btn-outline-secondary selection">';
+										html +=	'<input type="radio" name="options_start" id="option1" autocomplete="off" checked="" value="Morning"> Morning';
+									html +='</label>';
+									html +='<label class="btn btn-outline-secondary selection active">';
+										html +='<input type="radio" name="options_start" id="option2" autocomplete="off" value="Evening"> Evening';
+									html +='</label>';
+								} else{
+									html +=  '<input class="form-control table-input" type="text" name="start_hour_'+date_range[i]+'" value="'+(response.start_times_hours[i] || '')+'"/>';
+									html +=  '<input class="form-control table-input" type="text" name="starting_min_'+date_range[i]+'" value="'+(response.start_times_minutes[i] || '')+'"/>';
+									html +=  '<div class="btn-group btn-group-toggle" data-toggle="buttons">';
+									html +=	'<label class="btn btn-outline-secondary selection active">';
+										html +=	'<input type="radio" name="options_start" id="option1" autocomplete="off" checked="" value="Morning"> Morning';
+									html +='</label>';
+									html +='<label class="btn btn-outline-secondary selection ">';
+										html +='<input type="radio" name="options_start" id="option2" autocomplete="off" value="Evening"> Evening';
+									html +='</label>';
+								}
+							html +='</div>';							
+						html += '</div>'
+						html += '<th scope="row"><div style="display:flex; flex-direction:row;justify-content: space-around;">'
+								if (parseInt(response.end_times_hours[i]) < 12){
+									html +=  '<input class="form-control table-input" type="text" name="end_hour_'+date_range[i]+'" value="'+(response.end_times_hours[i] || '')+'"/>';
+									html +=  '<input class="form-control table-input" type="text" name="ending_min_'+date_range[i]+'" value="'+(response.end_times_minutes[i] || '')+'"/>';
+									html +=  '<div class="btn-group btn-group-toggle" data-toggle="buttons">';									
+									html +=	'<label class="btn btn-outline-secondary selection active">';
+										html +=	'<input type="radio" name="options_end" id="option1" autocomplete="off" value="Morning"> Morning';
+									html +='</label>';
+									html +='<label class="btn btn-outline-secondary selection">';
+										html +='<input type="radio" name="options_end" id="option2" autocomplete="off" checked="" value="Evening"> Evening';
+									html +='</label>';
+								} else{
+									html +=  '<input class="form-control table-input" type="text" name="end_hour_'+date_range[i]+'" value="'+((response.end_times_hours[i]-12) || '')+'"/>';
+									html +=  '<input class="form-control table-input" type="text" name="ending_min_'+date_range[i]+'" value="'+(response.end_times_minutes[i] || '')+'"/>';
+									html +=  '<div class="btn-group btn-group-toggle" data-toggle="buttons">';									
+									html +=	'<label class="btn btn-outline-secondary selection ">';
+										html +=	'<input type="radio" name="options_end" id="option1" autocomplete="off" value="Morning"> Morning';
+									html +='</label>';
+									html +='<label class="btn btn-outline-secondary selection active">';
+										html +='<input type="radio" name="options_end" id="option2" autocomplete="off" checked="" value="Evening"> Evening';
+									html +='</label>';
+								}
+							html +='</div>';							
+						html += '</div>'
+						if(day_range[i]=='Sunday'){
+							html+='<th scope="row"><input class="form-control table-input" type="text" name="lunch_'+date_range[i]+'" value="'+(response.lunch_break[i] || '0')+'"/>';
+						}else{
+							html+='<th scope="row"><input class="form-control table-input" type="text" name="lunch_'+date_range[i]+'" value="'+(response.lunch_break[i] || '30')+'"/>';
+						}
+					html +='</tr>';
+					}
+					$('#next-row').html(html);
+				},
+				error: function(error) {
+					console.error('Error:', error);
+				}
+			});
+		}
+
+		function submitTimeData(){
+			var csrfToken = $('[name="csrfmiddlewaretoken"]').val();
+			var formData = $('#empInfo').serialize();
+			formData += '&csrfmiddlewaretoken=' + csrfToken;
+			event.preventDefault();
+			$.ajax({
+				type: 'POST',
+				url: 'calculateSalaryAPI',
+				data: formData,
+				success: function(response) {
+					console.log(response);
+				},
+				error: function(error) {
+					console.error('Error:', error);
+				}
+			});
+		}
+		  
+	  </script>
+{% endblock %}

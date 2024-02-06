@@ -1,0 +1,167 @@
+{% extends 'base.html' %} 
+{% load static %}
+{% block title %}Add New Employee {% endblock %} 
+{% block content %}
+<div class="main-container">
+  <div class="pd-ltr-20">
+    <div class="container-fluid justify-content-between align-items-center">
+      <div>
+        <h2>Add New Employee</h2>
+        <br />
+        <div class="pd-20 card-box mb-30">
+          {% comment %}
+          <h4 class="text-blue h4">Add New Employee</h4>
+          {% endcomment %}
+          <div class="clearfix">
+            <div class="pull-left"></div>
+          </div>
+          <form id="register" method="post">
+			<div class="form-group row">
+                <label class="col-sm-12 col-md-2 col-form-label">Select</label>
+                <div class="col-sm-12 col-md-10" id="select-container">
+                    
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-12 col-md-2 col-form-label">Month</label>
+                <div class="col-sm-12 col-md-10">
+                    <input class="form-control month-picker" placeholder="Select Month" type="text" name="month">
+                </div>
+            </div>
+			<button type="button" class="btn btn-primary btn-lg btn p-10" onclick="submitForm()">Display</button>
+          </form>
+          <br/>
+          <br/>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Start Time</th>
+              <th scope="col">End Time</th>
+              <th scope="col">Lunch Break</th>
+              <th scope="col">Total Time</th>
+              </tr>
+            </thead>
+            <tbody id="next-row">
+    
+            </tbody>
+            </table>
+            <div class="form-group row">
+                <label class="col-sm-12 col-md-2 col-form-label">Total Time</label>
+                <input readonly class="col-sm-12 col-md-2 col-form-label" id="total_time" type="text" value="0"></input>
+            </div>
+            <div  class="form-group row">
+                <label class="col-sm-12 col-md-2 col-form-label">Salart Per Hour</label>
+                <input readonly class="col-sm-12 col-md-2 col-form-label" id="salary_per_hour" type="text" value="0"></input>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-12 col-md-2 col-form-label">Salary Amount Before Advance</label>
+                <input readonly class="col-sm-12 col-md-2 col-form-label" id="salary_amount" type="text" value="0"></input>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-12 col-md-2 col-form-label">Advance</label>
+                <input class="col-sm-12 col-md-2 col-form-label" id="advance" type="text" value="0"></input>
+                <button type="button" class="btn btn-primary btn-lg btn p-10" onclick="handleAdvance()">Update Advance</button>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-12 col-md-2 col-form-label">Salary After Advance</label>
+                <input readonly class="col-sm-12 col-md-2 col-form-label" id="salary_amount_advance" type="text" value="0"></input>
+            </div>
+            
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            $.ajax({
+                type: 'GET',
+                url: 'displayEmployee',
+                success: function(response) {
+                    
+                    console.log(response);
+    
+                    var names = response.names;
+                    html = '<select class="custom-select col-12" name="emp_name">';
+                        for (var i = 0; i < names.length; i++) {
+                            html+= '<option value="'+names[i]+'">'+names[i]+'</option>';
+                        }
+                    html += "</select>";
+                    
+					$('#select-container').html(html);
+
+                    // Assuming you want to display the result in some element with id "result"
+                    //$('#result').text('Total Working Time: ' + response.total_working_hours + ' hours and ' + response.total_working_minutes + ' minutes');
+                },
+                error: function(error) {
+                    // Handle error
+                    console.error('Error:', error);
+                }
+            });
+
+		});
+    </script>
+	<script>
+        function submitForm() {
+            // Get values from the form
+			var formData = $('#register').serialize();
+        
+            // Make AJAX GET request
+            $.ajax({
+                type: 'GET',
+                url: 'viewSalaryAPI',
+                data: formData,
+                success: function(response) {
+                    // Handle successful response
+                    console.log(response);
+
+                    html ='';
+                    for (var i = 0; i < response.date_range.length; i++) {
+                    html +='<tr>';
+                      html += '<th scope="row"><div style="display:flex; flex-direction:column;justify-content: center;padding-right: 20px;">'
+                        html +=  '<div style="padding:1px">'+response.date_range[i]+'</div>' ;
+                        html +=  '<div style="padding:1px">'+response.day_range[i]+'</div>' ;
+                      html += '</div>'
+                      html += '<th scope="row"><div style="display:flex; flex-direction:column;justify-content: center;padding-right: 20px;">'
+                        html +=  '<div style="padding:1px">'+response.start_time[i]+'</div>' ;
+                      html += '</div>'
+                      html += '<th scope="row"><div style="display:flex; flex-direction:column;justify-content: center;padding-right: 20px;">'
+                        html +=  '<div style="padding:1px">'+response.end_time[i]+'</div>' ;
+                      html += '</div>'
+                      html += '<th scope="row"><div style="display:flex; flex-direction:column;justify-content: center;padding-right: 20px;">'
+                        html +=  '<div style="padding:1px">'+response.break_time[i]+'</div>' ;
+                      html += '</div>'                      
+                      html += '<th scope="row"><div style="display:flex; flex-direction:column;justify-content: center;padding-right: 20px;">'
+                        html +=  '<div style="padding:1px">'+response.working_time_day[i]+'</div>' ;
+                      html += '</div>'
+                    }
+                    $('#next-row').html(html);  
+
+                    document.getElementById("total_time").value = response.total_working_time;
+                    document.getElementById("salary_per_hour").value = response.salary_per_hour;
+                    document.getElementById("salary_amount").value = response.total_salary;
+                    document.getElementById("advance").value = 0;
+                    document.getElementById("salary_amount_advance").value = response.total_salary;
+                    // Assuming you want to display the result in some element with id "result"
+                    //$('#result').text('Total Working Time: ' + response.total_working_hours + ' hours and ' + response.total_working_minutes + ' minutes');
+                },
+                error: function(error) {
+                    // Handle error
+                    console.error('Error:', error);
+                }
+            });
+        }
+		
+    </script>
+    <script>
+        function handleAdvance(){
+            document.getElementById("salary_amount_advance").value = document.getElementById("salary_amount").value - document.getElementById("advance").value;
+        }
+    </script>
+        {% endblock %}
