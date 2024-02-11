@@ -219,6 +219,7 @@
               <th scope="col">EmpName</th>
               <th scope="col">salary_per_hour</th>
               <th scope="col"></th>
+              <th scope="col"></th>
               </tr>
             </thead>
             <tbody id="next-row">
@@ -247,6 +248,8 @@
         	    data: formData,
         	    success: function(response) {
         	        console.log(response);
+                  location.reload(true);
+
         	        //window.location.href = redirection_urresponsel;
         	    },
         	    error: function(error) {
@@ -275,16 +278,17 @@
                   html +='<tr>';
                     html += '<th scope="row"><div style="display:flex; flex-direction:column;justify-content: center;padding-right: 20px;">'
                       html +=  '<div style="padding:1px">'+response[i].name+'</div>' ;
-                    html += '</div>'
+                    html += '</div></th>'
                     html += '<th scope="row"><div style="display:flex; flex-direction:row;justify-content: space-around;">'
                           html +=  '<input class="form-control table-input" type="text" id="salary'+response[i].name+'" value="'+response[i].salary_per_hour+'"/>';
-                      html +='</div>';
-                     html += '<th scope="row"><button type="button" class="btn btn-primary btn-lg btn p-10"';
+                      html +='</div></th>';
+                     html += '<th scope="row" style="display:flex; justify-content:space-evenly"><button type="button" class="btn btn-primary btn-lg btn p-10"';
                        html +=  'onclick="updateEmployee(\'' + response[i].name + '\')">Update';
-                   html +='</button>';                      							
-                    html += '</div>'
+                   html +='</button>  <button type="button" class="btn btn-primary btn-lg btn p-10" onclick="deleteEmployee(\'' + response[i].name + '\')">Delete </button> </th>';                  							
+                   html += '</tr>'                    
                   }
-                  $('#next-row').html(html);                  
+                  $('#next-row').html(html);   
+                                 
 
               },
               error: function(error) {
@@ -307,6 +311,27 @@
         	    data: formData,
         	    success: function(response) {
         	        console.log(response);
+        	        //window.location.href = redirection_urresponsel;
+                  location.reload(true);
+
+        	    },
+        	    error: function(error) {
+        	        console.error('Error:', error);
+        	    }
+        	});
+  }
+
+  function deleteEmployee(name){
+    console.log(name);
+    console.log(document.getElementById("salary"+name).value);
+			var formData = '&name=' + name;
+			$.ajax({
+        	    type: 'POST',
+        	    url: 'deleteEmployee',
+        	    data: formData,
+        	    success: function(response) {
+        	        console.log(response);
+                  location.reload(true);
         	        //window.location.href = redirection_urresponsel;
         	    },
         	    error: function(error) {

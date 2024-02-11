@@ -41,7 +41,6 @@ def calculate_salary(request):
 
 def view_salary(request):
     return render(request,'view_salary.html')
-
 class registerAPI(APIView):
     permission_classes = [AllowAny]
     def post(self,request):
@@ -82,6 +81,17 @@ class registerAPI(APIView):
             })
         print(employee_data)
         response_data = employee_data
+        return Response(response_data,status=status.HTTP_200_OK)
+
+
+class deleteEmployee(APIView):
+    permission_classes = [AllowAny]
+    def post(self,request):
+        name = request.POST.get('name')
+        print(name)
+        EmployeeData.objects.filter(name=name).delete()
+        redirection_url = "/"
+        response_data = {'redirection_url': redirection_url}
         return Response(response_data,status=status.HTTP_200_OK)
     
 class selectEmpData(APIView):
