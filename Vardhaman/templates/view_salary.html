@@ -6,7 +6,7 @@
   <div class="pd-ltr-20">
     <div class="container-fluid justify-content-between align-items-center">
       <div>
-        <h2>Add New Employee</h2>
+        <h2>View Salary</h2>
         <br />
         <div class="pd-20 card-box mb-30">
           {% comment %}
@@ -46,27 +46,28 @@
     
             </tbody>
             </table>
-            <div class="form-group row">
-                <label class="col-sm-12 col-md-2 col-form-label">Total Time</label>
-                <input readonly class="col-sm-12 col-md-2 col-form-label" id="total_time" type="text" value="0"></input>
-            </div>
-            <div  class="form-group row">
-                <label class="col-sm-12 col-md-2 col-form-label">Salart Per Hour</label>
-                <input readonly class="col-sm-12 col-md-2 col-form-label" id="salary_per_hour" type="text" value="0"></input>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-12 col-md-2 col-form-label">Salary Amount Before Advance</label>
-                <input readonly class="col-sm-12 col-md-2 col-form-label" id="salary_amount" type="text" value="0"></input>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-12 col-md-2 col-form-label">Advance</label>
-                <input class="col-sm-12 col-md-2 col-form-label" id="advance" type="text" value="0" onchange="handleAdvance()"></input>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-12 col-md-2 col-form-label">Salary After Advance</label>
-                <input readonly class="col-sm-12 col-md-2 col-form-label" id="salary_amount_advance" type="text" value="0"></input>
-            </div>
-            
+            <div style="display:flex;flex-direction:column">  
+              <div >
+                  <label style="margin-right:177px; margin-bottom:30px">Total Time</label>
+                  <input readonly  style="padding:10px;border-radius:10px;border:1px solid grey" id="total_time" type="text" value="0"></input>
+              </div>
+              <div >
+                  <label style="margin-right:140px; margin-bottom:30px">Salart Per Hour</label>
+                  <input readonly style="padding:10px;border-radius:10px;border:1px solid grey" id="salary_per_hour" type="text" value="0"></input>
+              </div>
+              <div >
+                  <label style="margin-right:20px; margin-bottom:30px">Salary Amount Before Advance</label>
+                  <input readonly  style="padding:10px;border-radius:10px;border:1px solid grey" id="salary_amount" type="text" value="0"></input>
+              </div>
+              <div >
+                  <label style="margin-right:190px; margin-bottom:30px">Advance</label>
+                  <input style="padding:10px;border-radius:10px;border:1px solid grey" id="advance" type="text" value="0" onchange="handleAdvance()"></input>
+              </div>
+              <div >
+                  <label style="margin-right:95px">Salary After Advance</label>
+                  <input readonly  style="padding:10px;border-radius:10px;border:1px solid grey" id="salary_amount_advance" type="text" value="0"></input>
+              </div>
+            </div>                                    
         </div>
       </div>
 
@@ -123,9 +124,9 @@
                     html ='';
                     for (var i = 0; i < response.date_range.length; i++) {
                     html +='<tr>';
-                      html += '<th scope="row"><div style="display:flex; flex-direction:column;justify-content: center;padding-right: 20px;">'
+                      html += '<th scope="row"><div style="display:flex; flex-direction:row;justify-content: left;padding-right: 20px;">'
                         html +=  '<div style="padding:1px">'+response.date_range[i]+'</div>' ;
-                        html +=  '<div style="padding:1px">'+response.day_range[i]+'</div>' ;
+                        html +=  '<div style="padding:1px; padding-left:3px">('+response.day_range[i]+')</div>' ;
                       html += '</div>'
                       html += '<th scope="row"><div style="display:flex; flex-direction:column;justify-content: center;padding-right: 20px;">'
                         html +=  '<div style="padding:1px">'+(response.start_time[i] || '')+'</div>' ;
