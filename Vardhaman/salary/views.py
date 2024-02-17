@@ -146,8 +146,8 @@ class calculateSalaryAPI(APIView):
     def post(self,request):
         name = request.POST.get('emp_name')
         month_str = request.POST.get('month')
-        option_start = request.POST.get('options_start')
-        option_end = request.POST.get('options_end')
+        # option_start = request.POST.get('options_start')
+        # option_end = request.POST.get('options_end')
         formData = request.POST.dict()
         date_range = get_date_range(month_str)
         start_times = []
@@ -180,9 +180,9 @@ class calculateSalaryAPI(APIView):
             if key.startswith("start_"):
                 index = key.split('_')[-1]
                 start_hour_str = value
-                if start_hour_str:  # Check if start_hour_str is not empty
+                if start_hour_str: 
                     start_hour = int(start_hour_str)
-                    if option_start == 'Evening':
+                    if formData.get(f"options_start_{index}") == 'Evening':
                         start_hour += 12
                 else:
                     start_hour = None                          
@@ -194,7 +194,7 @@ class calculateSalaryAPI(APIView):
                 end_hour_str = value
                 if end_hour_str:  # Check if start_hour_str is not empty
                     end_hour = int(end_hour_str)
-                    if option_end == 'Evening':
+                    if formData.get(f"options_end_{index}") == 'Evening':
                         end_hour += 12
                 else:
                     end_hour = None 

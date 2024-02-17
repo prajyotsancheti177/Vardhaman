@@ -25,13 +25,12 @@
             <div class="form-group row">
                 <label class="col-sm-12 col-md-2 col-form-label">Month</label>
                 <div class="col-sm-12 col-md-10">
-                    <input class="form-control month-picker" placeholder="Select Month" type="text" name="month">
+                    <input class="form-control month-picker" placeholder="Select Month" type="text" name="month" onclick="displaySubmitButton()">
                 </div>
             </div>
-			<button type="button" class="btn btn-primary btn-lg btn p-10" onclick="submitForm()">Display</button>
+			<button type="button" id="submit-button" class="btn btn-primary btn-lg btn p-10" style="display: block;" onclick="submitForm()">Display</button>
           </form>
-          <br/>
-          <br/>
+          <div id="salary-card" style="display: none;">
           <table class="table table-bordered">
             <thead>
               <tr>
@@ -67,7 +66,8 @@
                   <label style="margin-right:95px">Salary After Advance</label>
                   <input readonly  style="padding:10px;border-radius:10px;border:1px solid grey" id="salary_amount_advance" type="text" value="0"></input>
               </div>
-            </div>                                    
+            </div>
+          </div>                                                
         </div>
       </div>
 
@@ -88,7 +88,7 @@
                     console.log(response);
     
                     var names = response.names;
-                    html = '<select class="custom-select col-12" name="emp_name">';
+                    html = '<select class="custom-select col-12" name="emp_name" onclick="displaySubmitButton()">';
                         for (var i = 0; i < names.length; i++) {
                             html+= '<option value="'+names[i]+'">'+names[i]+'</option>';
                         }
@@ -108,7 +108,15 @@
 		});
     </script>
 	<script>
+
+        function displaySubmitButton() {
+            document.getElementById("submit-button").style.display = "";
+        }
+
         function submitForm() {
+
+          document.getElementById("salary-card").style.display = "";
+          document.getElementById("submit-button").style.display = "none";
             // Get values from the form
 			var formData = $('#register').serialize();
         

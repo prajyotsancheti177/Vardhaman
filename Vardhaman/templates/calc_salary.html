@@ -21,6 +21,37 @@
     	align-self: center;
 	}
 </style>
+<div class="modal fade" id="success-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h5 class="modal-title" id="exampleModalLongTitle">Success</h5>
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="location.reload(true);">
+			<span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+		<div class="modal-body">
+		  Salary Details Added Successfully
+		</div>
+	  </div>
+	</div>
+</div>
+
+<div class="modal fade" id="failure-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+	  <div class="modal-content">
+		<div class="modal-header" style="background: rgb(248 155 153);">
+		  <h5 class="modal-title" id="exampleModalLongTitle">Error</h5>
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="location.reload(true);">
+			<span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+		<div class="modal-body">
+			Salary Details Not Added.<br/>Contact Prajyot
+		</div>
+	  </div>
+	</div>
+  </div>
 <div class="main-container">
 	<div class="pd-ltr-20">
 	  <div class="container-fluid justify-content-between align-items-center">
@@ -45,7 +76,7 @@
 					</div>
 				</div>
 
-				<table class="table table-bordered">
+				<table id="month-table" style="display: none;" class="table table-bordered">
 					<thead>
 					  <tr>
 						<th scope="col">Date/Day</th>
@@ -59,12 +90,12 @@
 					</tbody>
 				  </table>
 															  
-				<div id="input-table" class="table table-bordered">
+				<div id="input-table" style="display: none;" class="table table-bordered">
 
 				</div>
 				
-				<button type="button" class="btn btn-primary btn-lg btn p-10" onclick="submitForm()">Select</button>
-				<button type="button" class="btn btn-primary btn-lg btn p-10" onclick="submitTimeData()">Calculate Salary</button>
+				<button type="button" class="btn btn-primary btn-lg btn p-10" id="submit-button" style="display: block;" onclick="submitForm()">Select</button>
+				<button type="button" class="btn btn-primary btn-lg btn p-10" id="calculate-salary-button" style="display: none;" onclick="submitTimeData()">Calculate Salary</button>
 			</form>
 		  </div>
 		</div>
@@ -104,6 +135,11 @@
     </script>
 	<script>
 		function submitForm(){
+			document.getElementById('submit-button').style.display = 'none';
+			document.getElementById("calculate-salary-button").style.display = "";
+			document.getElementById("month-table").style.display = "";
+			document.getElementById("input-table").style.display = "";
+
 			
 			var csrfToken = $('[name="csrfmiddlewaretoken"]').val();
 			var formData = $('#empInfo').serialize();
@@ -134,20 +170,20 @@
 									html +=  '<input class="form-control table-input" type="text" name="starting_min_'+date_range[i]+'" value="'+((response.start_times_minutes[i] !== null && response.start_times_minutes[i] !== undefined) ? response.start_times_minutes[i] : '')+'"/>';
 									html +=  '<div class="btn-group btn-group-toggle" data-toggle="buttons">';
 									html +=	'<label class="btn btn-outline-secondary selection">';
-										html +=	'<input type="radio" name="options_start" id="option1" autocomplete="off" checked="" value="Morning"> Morning';
+										html +=	'<input type="radio" name="options_start_'+date_range[i]+'" id="option1" autocomplete="off" checked="" value="Morning"> Morning';
 									html +='</label>';
 									html +='<label class="btn btn-outline-secondary selection active">';
-										html +='<input type="radio" name="options_start" id="option2" autocomplete="off" value="Evening"> Evening';
+										html +='<input type="radio" name="options_start_'+date_range[i]+'" id="option2" autocomplete="off" value="Evening"> Evening';
 									html +='</label>';
 								} else{
 									html +=  '<input class="form-control table-input" type="text" name="start_hour_'+date_range[i]+'" value="'+((response.start_times_hours[i] !== null && response.start_times_hours[i] !== undefined) ? response.start_times_hours[i] : '')+'"/>';
 									html += '<input class="form-control table-input" type="text" name="starting_min_'+date_range[i]+'" value="'+((response.start_times_minutes[i] !== null && response.start_times_minutes[i] !== undefined) ? response.start_times_minutes[i] : '')+'"/>';
 									html +=  '<div class="btn-group btn-group-toggle" data-toggle="buttons">';
 									html +=	'<label class="btn btn-outline-secondary selection active">';
-										html +=	'<input type="radio" name="options_start" id="option1" autocomplete="off" checked="" value="Morning"> Morning';
+										html +=	'<input type="radio" name="options_start_'+date_range[i]+'" id="option1" autocomplete="off" checked="" value="Morning"> Morning';
 									html +='</label>';
 									html +='<label class="btn btn-outline-secondary selection ">';
-										html +='<input type="radio" name="options_start" id="option2" autocomplete="off" value="Evening"> Evening';
+										html +='<input type="radio" name="options_start_'+date_range[i]+'" id="option2" autocomplete="off" value="Evening"> Evening';
 									html +='</label>';
 								}
 							html +='</div>';							
@@ -158,20 +194,20 @@
 									html +=  '<input class="form-control table-input" type="text" name="ending_min_'+date_range[i]+'" value="'+((response.end_times_minutes[i] !== null && response.end_times_minutes[i] !== undefined) ? response.end_times_minutes[i] : '')+'"/>';
 									html +=  '<div class="btn-group btn-group-toggle" data-toggle="buttons">';									
 									html +=	'<label class="btn btn-outline-secondary selection active">';
-										html +=	'<input type="radio" name="options_end" id="option1" autocomplete="off" value="Morning"> Morning';
+										html +=	'<input type="radio" name="options_end_'+date_range[i]+'" id="option1" autocomplete="off" value="Morning"> Morning';
 									html +='</label>';
 									html +='<label class="btn btn-outline-secondary selection">';
-										html +='<input type="radio" name="options_end" id="option2" autocomplete="off" checked="" value="Evening"> Evening';
+										html +='<input type="radio" name="options_end_'+date_range[i]+'" id="option2" autocomplete="off" checked="" value="Evening"> Evening';
 									html +='</label>';
 								} else{
 									html +=  '<input class="form-control table-input" type="text" name="end_hour_'+date_range[i]+'" value="'+((response.end_times_hours[i] !== null && response.end_times_hours[i] !== undefined) ? (response.end_times_hours[i]-12) : '')+'"/>';
 									html +=  '<input class="form-control table-input" type="text" name="ending_min_'+date_range[i]+'" value="'+((response.end_times_minutes[i] !== null && response.end_times_minutes[i] !== undefined) ? response.end_times_minutes[i] : '')+'"/>';
 									html +=  '<div class="btn-group btn-group-toggle" data-toggle="buttons">';									
 									html +=	'<label class="btn btn-outline-secondary selection ">';
-										html +=	'<input type="radio" name="options_end" id="option1" autocomplete="off" value="Morning"> Morning';
+										html +=	'<input type="radio" name="options_end_'+date_range[i]+'" id="option1" autocomplete="off" value="Morning"> Morning';
 									html +='</label>';
 									html +='<label class="btn btn-outline-secondary selection active">';
-										html +='<input type="radio" name="options_end" id="option2" autocomplete="off" checked="" value="Evening"> Evening';
+										html +='<input type="radio" name="options_end_'+date_range[i]+'" id="option2" autocomplete="off" checked="" value="Evening"> Evening';
 									html +='</label>';
 								}
 							html +='</div>';							
@@ -202,9 +238,13 @@
 				data: formData,
 				success: function(response) {
 					console.log(response);
+					$('#success-modal').modal('show');
+
 				},
 				error: function(error) {
 					console.error('Error:', error);
+					$('#failure-modal').modal('show');
+
 				}
 			});
 		}
