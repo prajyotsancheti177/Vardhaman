@@ -6,8 +6,9 @@
   <div class="pd-ltr-20">
     <div class="container-fluid justify-content-between align-items-center">
       <div>
-        <h2>View Salary</h2>
-        <br />
+        <div style="display:flex; justify-content:center; padding-bottom:15px;">
+          <h2>Salary Card</h2>
+        </div>
         <div class="pd-20 card-box mb-30">
           {% comment %}
           <h4 class="text-blue h4">Add New Employee</h4>
@@ -17,7 +18,7 @@
           </div>
           <form id="register" method="post">
 			<div class="form-group row">
-                <label class="col-sm-12 col-md-2 col-form-label">Select</label>
+                <label class="col-sm-12 col-md-2 col-form-label">Select Employee</label>
                 <div class="col-sm-12 col-md-10" id="select-container">
                     
                 </div>
@@ -60,7 +61,7 @@
               </div>
               <div >
                   <label style="margin-right:190px; margin-bottom:30px">Advance</label>
-                  <input style="padding:10px;border-radius:10px;border:1px solid grey" id="advance" type="text" value="0" onchange="handleAdvance()"></input>
+                  <input readonly style="padding:10px;border-radius:10px;border:1px solid grey" id="advance" type="text" value="0" onchange="handleAdvance()"></input>
               </div>
               <div >
                   <label style="margin-right:95px">Salary After Advance</label>
@@ -154,8 +155,8 @@
                     document.getElementById("total_time").value = response.total_working_time;
                     document.getElementById("salary_per_hour").value = response.salary_per_hour;
                     document.getElementById("salary_amount").value = response.total_salary;
-                    document.getElementById("advance").value = 0;
-                    document.getElementById("salary_amount_advance").value = response.total_salary;
+                    document.getElementById("advance").value = response.advance_amount;
+                    document.getElementById("salary_amount_advance").value = response.total_salary_after_advance;
                     // Assuming you want to display the result in some element with id "result"
                     //$('#result').text('Total Working Time: ' + response.total_working_hours + ' hours and ' + response.total_working_minutes + ' minutes');
                 },

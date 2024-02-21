@@ -1,0 +1,268 @@
+{% extends 'base.html' %} 
+{% load static %}
+{% block title %}Add New Employee {% endblock %} 
+{% block content %}
+<div class="main-container">
+  <div class="pd-ltr-20">
+    <div class="container-fluid justify-content-between align-items-center">
+      <div>
+        <h2>Manage Advance</h2>
+
+<!-- Modal -->
+<div class="modal fade" id="success-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="location.reload(true);">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Employee Added Successfully
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="failure-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background: rgb(248 155 153);">
+        <h5 class="modal-title" id="exampleModalLongTitle">Error</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="location.reload(true);">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Employee Not Added
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="delete-success-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="location.reload(true);">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Employee Deleted
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="update-success-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="location.reload(true);">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Employee Details Updated
+      </div>
+    </div>
+  </div>
+</div>
+       
+        <br />
+        <div class="pd-20 card-box mb-30">
+          <div class="clearfix">
+            <div class="pull-left"></div>
+          </div>
+          <form id="register" method="post">
+            <div class="form-group row">
+                <label class="col-sm-12 col-md-2 col-form-label">Select</label>
+                <div class="col-sm-12 col-md-10" id="select-container">
+                
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-12 col-md-2 col-form-label">Advance Amount</label>
+                <div class="col-sm-12 col-md-10">
+                    <input
+                    class="form-control"
+                    type="number"
+                    placeholder="Enter Advance Amount"
+                    name="advance_amount"
+                  />
+                </div>
+            </div>
+			<button type="button" class="btn btn-primary btn-lg btn p-10" onclick="submitForm()">Add Advance</button>
+          </form>
+        <br/>
+          <form>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+              <th scope="col">EmpName</th>
+              <th scope="col">Date</th>
+              <th scope="col">Advance Amount</th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody id="next-row">
+  
+            </tbody>
+            </table>
+          </form  >
+        </div>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      
+      $.ajax({
+          type: 'GET',
+          url: 'displayEmployee',
+          success: function(response) {
+              
+              console.log(response);
+
+              var names = response.names;
+              html = '<select class="custom-select col-12" name="emp_name">';
+                  for (var i = 0; i < names.length; i++) {
+                      html+= '<option value="'+names[i]+'">'+names[i]+'</option>';
+                  }
+              html += "</select>";
+              
+              $('#select-container').html(html);
+
+              // Assuming you want to display the result in some element with id "result"
+              //$('#result').text('Total Working Time: ' + response.total_working_hours + ' hours and ' + response.total_working_minutes + ' minutes');
+          },
+          error: function(error) {
+              // Handle error
+              console.error('Error:', error);
+          }
+      });
+
+  });
+</script>
+	<script>
+		function submitForm(){
+			var csrfToken = $('[name="csrfmiddlewaretoken"]').val();
+			var formData = $('#register').serialize();
+			formData += '&csrfmiddlewaretoken=' + csrfToken;
+			event.preventDefault();
+			$.ajax({
+        	    type: 'POST',
+        	    url: 'advanceAPI',
+        	    data: formData,
+        	    success: function(response) {
+        	        console.log(response);
+                  $('#success-modal').modal('show');
+                  // location.reload(true);
+
+        	        //window.location.href = redirection_urresponsel;
+        	    },
+        	    error: function(error) {
+                $('#failure-modal').modal('show');
+        	        console.error('Error:', error);
+        	    }
+        	});
+		}
+
+
+		
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          
+          $.ajax({
+              type: 'GET',
+              url: 'advanceAPI',
+              success: function(response) {
+                  
+                  console.log(response);
+
+//                  var emp_name = response.employees.name;
+//                  var salary_per_hour = response.employees.salary_per_hour;
+//                  console.log(emp_name);
+//                  console.log(salary_per_hour);
+                  html ='';
+                  for (var i = 0; i < response.length; i++) {
+                  html +='<tr>';
+                    html += '<th scope="row"><div style="display:flex; flex-direction:column;justify-content: center;padding-right: 20px;">'
+                      html +=  '<div style="padding:1px">'+response[i].name+'</div>' ;
+                    html += '</div></th>'
+                    html += '<th scope="row"><div style="display:flex; flex-direction:row;justify-content: space-around;">'
+                          html +=  '<input class="form-control table-input" type="date" id="date'+response[i].name+'" value="'+response[i].date+'"/>';
+                      html +='</div></th>';
+                    html += '<th scope="row"><div style="display:flex; flex-direction:row;justify-content: space-around;">'
+                        html +=  '<input class="form-control table-input" type="text" id="advance'+response[i].name+'" value="'+response[i].advance_amount+'"/>';
+                    html +='</div></th>';                      
+                     html += '<th scope="row" style="display:flex; justify-content:space-evenly"><button type="button" class="btn btn-primary btn-lg btn p-10"';
+                       html +=  'onclick="updateEmployee(\'' + response[i].name + '\')">Update';
+                   html +='</button>  <button type="button" class="btn btn-primary btn-lg btn p-10" style="background-color:red" onclick="deleteEmployee(\'' + response[i].name + '\')">Delete </button> </th>';                  							
+                   html += '</tr>'                    
+                  }
+                  $('#next-row').html(html);   
+                                 
+
+              },
+              error: function(error) {
+                  // Handle error
+                  console.error('Error:', error);
+              }
+          });
+
+  });
+
+  function updateEmployee(name){
+    console.log(name);
+			var formData = '&emp_name=' + name;
+			formData += '&advance_amount=' + document.getElementById("advance"+name).value;
+			event.preventDefault();
+			$.ajax({
+        	    type: 'POST',
+        	    url: 'advanceAPI',
+        	    data: formData,
+        	    success: function(response) {
+        	        console.log(response);
+        	        //window.location.href = redirection_urresponsel;
+                  $('#update-success-modal').modal('show');
+                  // location.reload(true);
+
+        	    },
+        	    error: function(error) {
+        	        console.error('Error:', error);
+        	    }
+        	});
+  }
+
+  function deleteEmployee(name){
+    console.log(name);
+			var formData = '&name=' + name;
+			$.ajax({
+        	    type: 'POST',
+        	    url: 'deleteAdvance',
+        	    data: formData,
+        	    success: function(response) {
+        	        console.log(response);
+                  $('#delete-success-modal').modal('show');
+                  // location.reload(true);
+        	        //window.location.href = redirection_urresponsel;
+        	    },
+        	    error: function(error) {
+        	        console.error('Error:', error);
+        	    }
+        	});
+  }
+  </script>
+{% endblock %}

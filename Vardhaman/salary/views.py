@@ -41,21 +41,68 @@ def calculate_salary(request):
 
 def view_salary(request):
     return render(request,'view_salary.html')
+
+def add_advance(request):
+    return render(request,'add_advance.html') 
+
+class advanceAPI(APIView):
+    permission_classes = [AllowAny]
+    def post(self,request):
+        name = request.POST.get('emp_name')
+        advnace_amount = request.POST.get('advance_amount')
+        advance_date = datetime.now()
+        print(advnace_amount)
+        existing_employee = EmployeeData.objects.filter(Q(name=name))
+        existing_data = EmployeeAdvance.objects.filter(emp_name=existing_employee.first())
+
+        if existing_data.exists():
+            print("hello1")
+            obj = EmployeeAdvance.objects.filter(emp_name=existing_employee.first()).first()
+            obj.advance_amount = advnace_amount
+            obj.save()
+        else:
+            EmployeeAdvance.objects.create(emp_name=existing_employee.first(), advance_amount=advnace_amount, date=advance_date)
+
+        redirection_url = "/"
+        response_data = {'redirection_url': redirection_url}
+        return Response(response_data,status=status.HTTP_200_OK)
+
+    def get(self,request):
+        all_advance = EmployeeAdvance.objects.all()
+
+        # Serialize employee data
+        advance_data = []
+        for advance in all_advance:
+            employee_data = EmployeeData.objects.filter(Q(name=advance.emp_name)).values('name')  # Replace 'other_field_name' with actual field names
+            employee_data_dict = list(employee_data)[0] if employee_data else {}  # Extract the first element from the queryset or return an empty dictionary
+            advance_data.append({
+                'name': employee_data_dict.get('name', ''),  # Access the 'name' field from the dictionary
+                'date': advance.date,
+                'advance_amount': advance.advance_amount
+            })
+        print(advance_data)
+        response_data = advance_data
+        return Response(response_data,status=status.HTTP_200_OK)
+
+class deleteAdvance(APIView):
+    permission_classes = [AllowAny]
+    def post(self,request):
+        name = request.POST.get('name')
+        existing_employee = EmployeeData.objects.filter(Q(name=name)).first()       
+        EmployeeAdvance.objects.filter(emp_name=existing_employee).delete()
+        redirection_url = "/"
+        response_data = {'redirection_url': redirection_url}
+        return Response(response_data,status=status.HTTP_200_OK)
+
 class registerAPI(APIView):
     permission_classes = [AllowAny]
     def post(self,request):
         name = request.POST.get('name')
         salary_per_hour_str = request.POST.get('salary')
-        salary_per_hour = int(salary_per_hour_str)
-        print("-------------------------")
-        print(name)
-        print(salary_per_hour)
-        print("-------------------------")
+        salary_per_hour = float(salary_per_hour_str)
         existing_employee = EmployeeData.objects.filter(
             Q(name=name) 
         )
-        print(existing_employee)
-        print(existing_employee.exists())
 
         if existing_employee.exists():
             print("hello1")
@@ -113,7 +160,17 @@ class selectEmpData(APIView):
         start_times_minutes = []
         end_times_hours = []
         end_times_minutes = [] 
-        lunch_times=[]       
+        lunch_times=[]    
+        advance_salary = 0   
+
+        existing_employee = EmployeeData.objects.filter(Q(name=name)).first()
+        existing_advance = EmployeeAdvance.objects.filter(Q(emp_name=existing_employee) &Q(date=month_str))
+
+        if(existing_advance.exists()):
+            advance_salary = existing_advance.first().advance_amount
+        else:
+            advance_salary = 0
+
         for date in date_range:
             schedule = existing_work_schedules.filter(date=date).first()
             if schedule:
@@ -132,7 +189,7 @@ class selectEmpData(APIView):
             days_range += [date.strftime('%A')]
         # EmployeeData.objects.create(name=name)
         redirection_url = "/"
-        response_data = {'redirection_url': redirection_url,'date_range':dates_range,'day_range':days_range,'start_times_hours': start_times_hours,'start_times_minutes': start_times_minutes,'end_times_hours': end_times_hours,'end_times_minutes': end_times_minutes,'lunch_break':lunch_times}
+        response_data = {'redirection_url': redirection_url,'date_range':dates_range,'day_range':days_range,'start_times_hours': start_times_hours,'start_times_minutes': start_times_minutes,'end_times_hours': end_times_hours,'end_times_minutes': end_times_minutes,'lunch_break':lunch_times,'advance_salary':advance_salary}
         return Response(response_data,status=status.HTTP_200_OK)
 
 class displayEmployee(APIView):
@@ -155,6 +212,7 @@ class calculateSalaryAPI(APIView):
         lunch_times = []
         dates_range =[]
         days_range =[]
+        advance_amount = request.POST.get('advance_amount')
 
         emp_name = EmployeeData.objects.get(name=name)
 
@@ -165,6 +223,14 @@ class calculateSalaryAPI(APIView):
             Q(emp_name=emp_name) &
             Q(date__month=selected_month)
         )
+
+        existing_advance = EmployeeAdvance.objects.filter(Q(emp_name=emp_name) &Q(date=month_str))
+
+        if(existing_advance.exists()):
+            print("advance",advance_amount)
+            existing_advance.update(advance_amount=advance_amount)
+        else:
+            EmployeeAdvance.objects.create(emp_name=emp_name, advance_amount=advance_amount, date=month_str)
 
         # Delete existing WorkSchedule entries if they exist
         existing_work_schedules.delete()     
@@ -258,7 +324,15 @@ class viewSalaryAPI(APIView):
             dates_range += [date.strftime('%Y-%m-%d')]
             days_range += [date.strftime('%A')]             
         print(emp_name)
-        print(month_year)   
+        print(month_year)
+        advance_amount = 0
+        
+        existing_employee = EmployeeData.objects.filter(Q(name=emp_name)).first()
+        existing_advance = EmployeeAdvance.objects.filter(Q(emp_name=existing_employee) &Q(date=month_year)).first()
+        if(existing_advance):
+            advance_amount = existing_advance.advance_amount
+        else:
+            advance_amount = 0
 
         try:
             split_values = month_year.rsplit(maxsplit=1)
@@ -314,8 +388,9 @@ class viewSalaryAPI(APIView):
         employee = EmployeeData.objects.get(name=emp_name)
         print(employee)
         salary_per_hour = employee.salary_per_hour
-        total_salary = int((total_working_hours * salary_per_hour) + (total_working_minutes * (salary_per_hour/60)))
+        total_salary = round(float((total_working_hours * salary_per_hour) + (total_working_minutes * (salary_per_hour/60))), 2)
         print(total_salary)
+        total_salary_after_advance = round(total_salary - advance_amount,2)
             # print(work_schedule.end_time)
             # total_working_time += timedelta(work_schedule.end_time) - timedelta(work_schedule.start_time) - timedelta(minutes=work_schedule.lunch_break)
             # print(total_working_time)
@@ -333,8 +408,11 @@ class viewSalaryAPI(APIView):
 
 
         # Serialize the result
-        response_data = {'date_range':dates_range,'day_range':days_range,'start_time':start_time,'end_time':end_time,'break_time':break_time,'working_time_day': time_strings,'total_working_time': total_time_worked,'salary_per_hour': salary_per_hour,'total_salary': total_salary,}
+        response_data = {'date_range':dates_range,'day_range':days_range,'start_time':start_time,'end_time':end_time,'break_time':break_time,'working_time_day': time_strings,'total_working_time': total_time_worked,'salary_per_hour': salary_per_hour,'total_salary': total_salary,'advance_amount':advance_amount,'total_salary_after_advance':total_salary_after_advance}
 
         print(response_data)
 
         return Response(response_data)
+
+
+

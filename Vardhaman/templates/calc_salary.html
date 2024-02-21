@@ -72,9 +72,11 @@
 				<div class="form-group row">
 					<label class="col-sm-12 col-md-2 col-form-label">Month</label>
 					<div class="col-sm-12 col-md-10">
-						<input class="form-control month-picker" placeholder="Select Month" type="text" name="month">
+						<input class="form-control month-picker" placeholder="Select Month" type="text" name="month" onclick="displaySelectButton()">
 					</div>
 				</div>
+				<button type="button" class="btn btn-primary btn-lg btn p-10" id="submit-button" style="display: block;" onclick="submitForm()">Select</button>
+
 
 				<table id="month-table" style="display: none;" class="table table-bordered">
 					<thead>
@@ -89,12 +91,24 @@
 
 					</tbody>
 				  </table>
+				  <div class="form-group row" id="advance_amount" style="display:none">
+					<label class="col-sm-12 col-md-2 col-form-label">Advance Amount</label>
+					<div class="col-sm-12 col-md-10">
+						<input
+						id = "advance_amount_placeholder"
+						class="form-control"
+						type="number"
+						placeholder="Enter Advance Amount"
+						name="advance_amount"
+						value = "0"
+					  />
+					</div>
+				</div>				  
 															  
 				<div id="input-table" style="display: none;" class="table table-bordered">
 
 				</div>
 				
-				<button type="button" class="btn btn-primary btn-lg btn p-10" id="submit-button" style="display: block;" onclick="submitForm()">Select</button>
 				<button type="button" class="btn btn-primary btn-lg btn p-10" id="calculate-salary-button" style="display: none;" onclick="submitTimeData()">Calculate Salary</button>
 			</form>
 		  </div>
@@ -139,6 +153,7 @@
 			document.getElementById("calculate-salary-button").style.display = "";
 			document.getElementById("month-table").style.display = "";
 			document.getElementById("input-table").style.display = "";
+			document.getElementById("advance_amount").style.display = "";
 
 			
 			var csrfToken = $('[name="csrfmiddlewaretoken"]').val();
@@ -155,8 +170,11 @@
 					//var redirection_url = response_data.redirection_url;
 					var date_range = response.date_range;
 					var day_range = response.day_range;
+					var advance_salary = response.advance_salary;
 					console.log(date_range);
 					console.log(day_range);
+					console.log(advance_salary);
+					document.getElementById("advance_amount_placeholder").value = advance_salary;
 					html ='';
 					for (var i = 0; i < date_range.length; i++) {
 					html +='<tr>';
@@ -247,6 +265,10 @@
 
 				}
 			});
+		}
+
+		function displaySelectButton(){
+			document.getElementById('submit-button').style.display = 'block';
 		}
 		  
 	  </script>
