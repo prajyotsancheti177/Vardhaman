@@ -128,7 +128,7 @@
                     console.log(response);
     
                     var names = response.names;
-                    html = '<select class="custom-select col-12" name="emp_name">';
+                    html = '<select class="custom-select col-12" name="emp_name" onclick="displaySelectButton()">';
                         for (var i = 0; i < names.length; i++) {
                             html+= '<option value="'+names[i]+'">'+names[i]+'</option>';
                         }
