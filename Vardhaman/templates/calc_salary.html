@@ -188,10 +188,10 @@
 									html +=  '<input class="form-control table-input" type="text" name="starting_min_'+date_range[i]+'" value="'+((response.start_times_minutes[i] !== null && response.start_times_minutes[i] !== undefined) ? response.start_times_minutes[i] : '')+'"/>';
 									html +=  '<div class="btn-group btn-group-toggle" data-toggle="buttons">';
 									html +=	'<label class="btn btn-outline-secondary selection">';
-										html +=	'<input type="radio" name="options_start_'+date_range[i]+'" id="option1" autocomplete="off" checked="" value="Morning"> Morning';
+										html +=	'<input type="radio" name="options_start_'+date_range[i]+'" id="option1" autocomplete="off" value="Morning"> Morning';
 									html +='</label>';
 									html +='<label class="btn btn-outline-secondary selection active">';
-										html +='<input type="radio" name="options_start_'+date_range[i]+'" id="option2" autocomplete="off" value="Evening"> Evening';
+										html +='<input type="radio" name="options_start_'+date_range[i]+'" id="option2" autocomplete="off" checked="" value="Evening"> Evening';
 									html +='</label>';
 								} else{
 									html +=  '<input class="form-control table-input" type="text" name="start_hour_'+date_range[i]+'" value="'+((response.start_times_hours[i] !== null && response.start_times_hours[i] !== undefined) ? response.start_times_hours[i] : '')+'"/>';
@@ -212,10 +212,10 @@
 									html +=  '<input class="form-control table-input" type="text" name="ending_min_'+date_range[i]+'" value="'+((response.end_times_minutes[i] !== null && response.end_times_minutes[i] !== undefined) ? response.end_times_minutes[i] : '')+'"/>';
 									html +=  '<div class="btn-group btn-group-toggle" data-toggle="buttons">';									
 									html +=	'<label class="btn btn-outline-secondary selection active">';
-										html +=	'<input type="radio" name="options_end_'+date_range[i]+'" id="option1" autocomplete="off" value="Morning"> Morning';
+										html +=	'<input type="radio" name="options_end_'+date_range[i]+'" id="option1" autocomplete="off" checked="" value="Morning"> Morning';
 									html +='</label>';
 									html +='<label class="btn btn-outline-secondary selection">';
-										html +='<input type="radio" name="options_end_'+date_range[i]+'" id="option2" autocomplete="off" checked="" value="Evening"> Evening';
+										html +='<input type="radio" name="options_end_'+date_range[i]+'" id="option2" autocomplete="off" value="Evening"> Evening';
 									html +='</label>';
 								} else{
 									html +=  '<input class="form-control table-input" type="text" name="end_hour_'+date_range[i]+'" value="'+((response.end_times_hours[i] !== null && response.end_times_hours[i] !== undefined) ? (response.end_times_hours[i]-12) : '')+'"/>';
@@ -233,7 +233,7 @@
 						if(day_range[i]=='Sunday'){
 							html+='<th scope="row"><input class="form-control table-input" type="text" name="lunch_'+date_range[i]+'" value="'+(response.lunch_break[i] || '0')+'"/>';
 						}else{
-							html+='<th scope="row"><input class="form-control table-input" type="text" name="lunch_'+date_range[i]+'" value="'+(response.lunch_break[i] || '30')+'"/>';
+							html+='<th scope="row"><input class="form-control table-input" type="text" name="lunch_'+date_range[i]+'" value="'+(response.lunch_break[i] || response.lunch_break[i] == 0 ? response.lunch_break[i] : '30') +'"/>';
 						}
 					html +='</tr>';
 					}

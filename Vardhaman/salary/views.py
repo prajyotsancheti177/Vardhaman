@@ -274,9 +274,7 @@ class calculateSalaryAPI(APIView):
         for i in start_times :
             if start_times[a] == 'None':
                 print("-------------")
-                start_times[a] = 0
-            print("in for")
-            
+                start_times[a] = 0            
             a += 1
         a=0
         for i in end_times :
