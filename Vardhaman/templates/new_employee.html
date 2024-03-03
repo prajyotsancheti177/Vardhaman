@@ -167,9 +167,9 @@
                   html ='';
                   for (var i = 0; i < response.length; i++) {
                   html +='<tr>';
-                    html += '<th scope="row"><div style="display:flex; flex-direction:column;justify-content: center;padding-right: 20px;">'
-                      html +=  '<div style="padding:1px">'+response[i].name+'</div>' ;
-                    html += '</div></th>'
+                    html += '<th scope="row"><div style="display:flex; flex-direction:row;justify-content: space-around;">'
+                      html +=  '<input class="form-control table-input" type="text" id="name'+response[i].name+'" value="'+response[i].name+'"/>';
+                  html +='</div></th>';                    
                     html += '<th scope="row"><div style="display:flex; flex-direction:row;justify-content: space-around;">'
                           html +=  '<input class="form-control table-input" type="text" id="salary'+response[i].name+'" value="'+response[i].salary_per_hour+'"/>';
                       html +='</div></th>';
@@ -195,6 +195,7 @@
     console.log(document.getElementById("salary"+name).value);
 			var formData = '&name=' + name;
 			formData += '&salary=' + document.getElementById("salary"+name).value;
+			formData += '&new_name=' + document.getElementById("name"+name).value;
 			event.preventDefault();
 			$.ajax({
         	    type: 'POST',

@@ -99,18 +99,21 @@ class registerAPI(APIView):
     def post(self,request):
         name = request.POST.get('name')
         salary_per_hour_str = request.POST.get('salary')
+        new_name = request.POST.get('new_name')
         salary_per_hour = float(salary_per_hour_str)
         existing_employee = EmployeeData.objects.filter(
             Q(name=name) 
         )
 
         if existing_employee.exists():
-            print("hello1")
             obj = existing_employee.first()
+            print(new_name)
+            print(obj.name)
             obj.salary_per_hour = salary_per_hour
+            obj.name = new_name
             obj.save()
         else:
-            print("hello2")
+            # print("hello2")
             EmployeeData.objects.create(name=name, salary_per_hour=salary_per_hour)
         redirection_url = "/"
         response_data = {'redirection_url': redirection_url}
@@ -126,7 +129,7 @@ class registerAPI(APIView):
                 'name': employee.name,
                 'salary_per_hour': employee.salary_per_hour
             })
-        print(employee_data)
+        # print(employee_data)
         response_data = employee_data
         return Response(response_data,status=status.HTTP_200_OK)
 
@@ -135,7 +138,7 @@ class deleteEmployee(APIView):
     permission_classes = [AllowAny]
     def post(self,request):
         name = request.POST.get('name')
-        print(name)
+        # print(name)
         EmployeeData.objects.filter(name=name).delete()
         redirection_url = "/"
         response_data = {'redirection_url': redirection_url}
@@ -144,14 +147,14 @@ class deleteEmployee(APIView):
 class selectEmpData(APIView):
     permission_classes = [AllowAny]
     def post(self,request):
-        print("here2")
+        # print("here2")
         name = request.POST.get('emp_name')
         month_str = request.POST.get('month')
-        print(name,month_str)
+        # print(name,month_str)
         date_range = get_date_range(month_str)
         dates_range =[]
         days_range =[]
-        print("here3")
+        # print("here3")
 
         date_object = datetime.strptime(month_str, '%B %Y')
         selected_month = date_object.month
@@ -183,7 +186,7 @@ class selectEmpData(APIView):
                 start_times_hours.append(None)
                 start_times_minutes.append(None)
         
-        print("here4")
+        # print("here4")
         for date in date_range:
             dates_range += [date.strftime('%Y-%m-%d')]
             days_range += [date.strftime('%A')]
@@ -227,7 +230,7 @@ class calculateSalaryAPI(APIView):
         existing_advance = EmployeeAdvance.objects.filter(Q(emp_name=emp_name) &Q(date=month_str))
 
         if(existing_advance.exists()):
-            print("advance",advance_amount)
+            # print("advance",advance_amount)
             existing_advance.update(advance_amount=advance_amount)
         else:
             EmployeeAdvance.objects.create(emp_name=emp_name, advance_amount=advance_amount, date=month_str)
@@ -235,12 +238,12 @@ class calculateSalaryAPI(APIView):
         # Delete existing WorkSchedule entries if they exist
         existing_work_schedules.delete()     
 
-        print("here3")
+        # print("here3")
         for date in date_range:
             dates_range += [date.strftime('%Y-%m-%d')]
             days_range += [date.strftime('%A')]
 
-        print("here4")
+        # print("here4")
 
         for key, value in formData.items():
             if key.startswith("start_"):
@@ -268,12 +271,12 @@ class calculateSalaryAPI(APIView):
                 end_times.append(f"{end_hour}:{end_min}")
             elif key.startswith("lunch_"):
                 lunch_times.append(value)
-        print("here5")
+        # print("here5")
 
         a=0
         for i in start_times :
             if start_times[a] == 'None':
-                print("-------------")
+                # print("-------------")
                 start_times[a] = 0            
             a += 1
         a=0
@@ -286,15 +289,15 @@ class calculateSalaryAPI(APIView):
             if lunch_times[a] == 'None':
                 lunch_times[a] = 0                        
             a += 1
-        print(start_times)
-        print(end_times)
-        print(lunch_times)
+        # print(start_times)
+        # print(end_times)
+        # print(lunch_times)
         # Get the Employee instance
         emp_name = EmployeeData.objects.get(name = name)
         a = 0
         for i in dates_range:
             if start_times[a] != "None:":
-                print("Hello")
+                # print("Hello")
                 work_schedule = WorkSchedule(
                         emp_name = emp_name,
                         date = dates_range[a],
@@ -321,8 +324,8 @@ class viewSalaryAPI(APIView):
         for date in date_range:
             dates_range += [date.strftime('%Y-%m-%d')]
             days_range += [date.strftime('%A')]             
-        print(emp_name)
-        print(month_year)
+        # print(emp_name)
+        # print(month_year)
         advance_amount = 0
         
         existing_employee = EmployeeData.objects.filter(Q(name=emp_name)).first()
@@ -340,7 +343,7 @@ class viewSalaryAPI(APIView):
             month_name, year = split_values
             month = datetime.strptime(month_name, '%B').month
         except ValueError as e:
-            print(f'Error parsing month and year: {e}')  # Add this line for debugging
+            # print(f'Error parsing month and year: {e}')  # Add this line for debugging
             return Response({'error': 'Invalid month and year format'}, status=400)
      
 
@@ -361,7 +364,7 @@ class viewSalaryAPI(APIView):
             start_datetime = datetime.combine(datetime.today(), work_schedule.start_time)
             end_datetime = datetime.combine(datetime.today(), work_schedule.end_time)            
             time_difference = end_datetime - start_datetime - timedelta(minutes=work_schedule.lunch_break)
-            print(time_difference)
+            # print(time_difference)
             total_time += time_difference
             time_per_day.append(time_difference)
             start_time.append(work_schedule.start_time)
@@ -369,25 +372,25 @@ class viewSalaryAPI(APIView):
             break_time.append(work_schedule.lunch_break)
             # time_per_day[a] = 
 
-        print(total_time)
-        print(time_per_day)
+        # print(total_time)
+        # print(time_per_day)
         for delta in time_per_day:
             hours = delta.seconds // 3600
             minutes = (delta.seconds % 3600) // 60
             time_strings.append(f"{hours:02}:{minutes:02}")  # Format hours and minutes as HH:MM string
 
-        print(time_strings)
+        # print(time_strings)
 
         total_working_hours = int(total_time.total_seconds() // 3600)  # Convert to total hours
         remaining_seconds = total_time.total_seconds() % 3600
         total_working_minutes = int(remaining_seconds // 60) 
         total_time_worked = (f"{total_working_hours:02}:{total_working_minutes:02}")   
-        print(total_time_worked)
+        # print(total_time_worked)
         employee = EmployeeData.objects.get(name=emp_name)
-        print(employee)
+        # print(employee)
         salary_per_hour = employee.salary_per_hour
         total_salary = round(float((total_working_hours * salary_per_hour) + (total_working_minutes * (salary_per_hour/60))), 2)
-        print(total_salary)
+        # print(total_salary)
         total_salary_after_advance = round(total_salary - advance_amount,2)
             # print(work_schedule.end_time)
             # total_working_time += timedelta(work_schedule.end_time) - timedelta(work_schedule.start_time) - timedelta(minutes=work_schedule.lunch_break)
@@ -408,7 +411,7 @@ class viewSalaryAPI(APIView):
         # Serialize the result
         response_data = {'date_range':dates_range,'day_range':days_range,'start_time':start_time,'end_time':end_time,'break_time':break_time,'working_time_day': time_strings,'total_working_time': total_time_worked,'salary_per_hour': salary_per_hour,'total_salary': total_salary,'advance_amount':advance_amount,'total_salary_after_advance':total_salary_after_advance}
 
-        print(response_data)
+        # print(response_data)
 
         return Response(response_data)
 
