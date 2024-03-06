@@ -85,6 +85,7 @@
 						<th scope="col">Start Time</th>
 						<th scope="col">End Time</th>
 						<th scope="col">Lunch Break</th>
+						<th scope="col">Holiday</th>
 					  </tr>
 					</thead>
 					<tbody id="next-row">
@@ -184,56 +185,62 @@
 						html += '</div>'
 						html += '<th scope="row"><div style="display:flex; flex-direction:row;justify-content: space-around;">'
 								if (parseInt(response.start_times_hours[i]) > 12){
-									html +=  '<input class="form-control table-input" type="text" name="start_hour_'+date_range[i]+'" value="'+((response.start_times_hours[i] !== null && response.start_times_hours[i] !== undefined) ? (response.start_times_hours[i]-12) : '')+'"/>';
-									html +=  '<input class="form-control table-input" type="text" name="starting_min_'+date_range[i]+'" value="'+((response.start_times_minutes[i] !== null && response.start_times_minutes[i] !== undefined) ? response.start_times_minutes[i] : '')+'"/>';
+									html +=  '<input class="form-control table-input" type="text" name="start_hour_'+date_range[i]+'" id="start_hour_'+date_range[i]+'" value="'+((response.start_times_hours[i] !== null && response.start_times_hours[i] !== undefined) ? (response.start_times_hours[i]-12) : '')+'"/>';
+									html +=  '<input class="form-control table-input" type="text" name="starting_min_'+date_range[i]+'" id="starting_min_'+date_range[i]+'" value="'+((response.start_times_minutes[i] !== null && response.start_times_minutes[i] !== undefined) ? response.start_times_minutes[i] : '')+'"/>';
 									html +=  '<div class="btn-group btn-group-toggle" data-toggle="buttons">';
 									html +=	'<label class="btn btn-outline-secondary selection">';
-										html +=	'<input type="radio" name="options_start_'+date_range[i]+'" id="option1" autocomplete="off" value="Morning"> Morning';
+										html +=	'<input type="radio" name="options_start_'+date_range[i]+'" id="options_start_morning'+date_range[i]+'" autocomplete="off" value="Morning"> Morning';
 									html +='</label>';
 									html +='<label class="btn btn-outline-secondary selection active">';
-										html +='<input type="radio" name="options_start_'+date_range[i]+'" id="option2" autocomplete="off" checked="" value="Evening"> Evening';
+										html +='<input type="radio" name="options_start_'+date_range[i]+'" id="options_start_evening'+date_range[i]+'" autocomplete="off" checked="" value="Evening"> Evening';
 									html +='</label>';
 								} else{
-									html +=  '<input class="form-control table-input" type="text" name="start_hour_'+date_range[i]+'" value="'+((response.start_times_hours[i] !== null && response.start_times_hours[i] !== undefined) ? response.start_times_hours[i] : '')+'"/>';
-									html += '<input class="form-control table-input" type="text" name="starting_min_'+date_range[i]+'" value="'+((response.start_times_minutes[i] !== null && response.start_times_minutes[i] !== undefined) ? response.start_times_minutes[i] : '')+'"/>';
+									html +=  '<input class="form-control table-input" type="text" name="start_hour_'+date_range[i]+'" id="start_hour_'+date_range[i]+'" value="'+((response.start_times_hours[i] !== null && response.start_times_hours[i] !== undefined) ? response.start_times_hours[i] : '')+'"/>';
+									html += '<input class="form-control table-input" type="text" name="starting_min_'+date_range[i]+'" id="starting_min_'+date_range[i]+'" value="'+((response.start_times_minutes[i] !== null && response.start_times_minutes[i] !== undefined) ? response.start_times_minutes[i] : '')+'"/>';
 									html +=  '<div class="btn-group btn-group-toggle" data-toggle="buttons">';
 									html +=	'<label class="btn btn-outline-secondary selection active">';
-										html +=	'<input type="radio" name="options_start_'+date_range[i]+'" id="option1" autocomplete="off" checked="" value="Morning"> Morning';
+										html +=	'<input type="radio" name="options_start_'+date_range[i]+'" id="options_start_evening'+date_range[i]+'" autocomplete="off" checked="" value="Morning"> Morning';
 									html +='</label>';
 									html +='<label class="btn btn-outline-secondary selection ">';
-										html +='<input type="radio" name="options_start_'+date_range[i]+'" id="option2" autocomplete="off" value="Evening"> Evening';
+										html +='<input type="radio" name="options_start_'+date_range[i]+'" id="options_start_morning'+date_range[i]+'" autocomplete="off" value="Evening"> Evening';
 									html +='</label>';
 								}
 							html +='</div>';							
 						html += '</div>'
 						html += '<th scope="row"><div style="display:flex; flex-direction:row;justify-content: space-around;">'
 								if (parseInt(response.end_times_hours[i]) < 12){
-									html +=  '<input class="form-control table-input" type="text" name="end_hour_'+date_range[i]+'" value="'+((response.end_times_hours[i] !== null && response.end_times_hours[i] !== undefined) ? response.end_times_hours[i] : '')+'"/>';
-									html +=  '<input class="form-control table-input" type="text" name="ending_min_'+date_range[i]+'" value="'+((response.end_times_minutes[i] !== null && response.end_times_minutes[i] !== undefined) ? response.end_times_minutes[i] : '')+'"/>';
+									html +=  '<input class="form-control table-input" type="text" name="end_hour_'+date_range[i]+'" id="end_hour_'+date_range[i]+'" value="'+((response.end_times_hours[i] !== null && response.end_times_hours[i] !== undefined) ? response.end_times_hours[i] : '')+'"/>';
+									html +=  '<input class="form-control table-input" type="text" name="ending_min_'+date_range[i]+'" id="ending_min_'+date_range[i]+'" value="'+((response.end_times_minutes[i] !== null && response.end_times_minutes[i] !== undefined) ? response.end_times_minutes[i] : '')+'"/>';
 									html +=  '<div class="btn-group btn-group-toggle" data-toggle="buttons">';									
 									html +=	'<label class="btn btn-outline-secondary selection active">';
-										html +=	'<input type="radio" name="options_end_'+date_range[i]+'" id="option1" autocomplete="off" checked="" value="Morning"> Morning';
+										html +=	'<input type="radio" name="options_end_'+date_range[i]+'" id="options_end_morning'+date_range[i]+'" autocomplete="off" checked="" value="Morning"> Morning';
 									html +='</label>';
 									html +='<label class="btn btn-outline-secondary selection">';
-										html +='<input type="radio" name="options_end_'+date_range[i]+'" id="option2" autocomplete="off" value="Evening"> Evening';
+										html +='<input type="radio" name="options_end_'+date_range[i]+'" id="options_end_evening'+date_range[i]+'" autocomplete="off" value="Evening"> Evening';
 									html +='</label>';
 								} else{
-									html +=  '<input class="form-control table-input" type="text" name="end_hour_'+date_range[i]+'" value="'+((response.end_times_hours[i] !== null && response.end_times_hours[i] !== undefined) ? (response.end_times_hours[i]-12) : '')+'"/>';
-									html +=  '<input class="form-control table-input" type="text" name="ending_min_'+date_range[i]+'" value="'+((response.end_times_minutes[i] !== null && response.end_times_minutes[i] !== undefined) ? response.end_times_minutes[i] : '')+'"/>';
+									html +=  '<input class="form-control table-input" type="text" name="end_hour_'+date_range[i]+'" id="end_hour_'+date_range[i]+'" value="'+((response.end_times_hours[i] !== null && response.end_times_hours[i] !== undefined) ? (response.end_times_hours[i]-12) : '')+'"/>';
+									html +=  '<input class="form-control table-input" type="text" name="ending_min_'+date_range[i]+'" id="ending_min_'+date_range[i]+'" value="'+((response.end_times_minutes[i] !== null && response.end_times_minutes[i] !== undefined) ? response.end_times_minutes[i] : '')+'"/>';
 									html +=  '<div class="btn-group btn-group-toggle" data-toggle="buttons">';									
 									html +=	'<label class="btn btn-outline-secondary selection ">';
-										html +=	'<input type="radio" name="options_end_'+date_range[i]+'" id="option1" autocomplete="off" value="Morning"> Morning';
+										html +=	'<input type="radio" name="options_end_'+date_range[i]+'" id="options_end_morning'+date_range[i]+'" autocomplete="off" value="Morning"> Morning';
 									html +='</label>';
 									html +='<label class="btn btn-outline-secondary selection active">';
-										html +='<input type="radio" name="options_end_'+date_range[i]+'" id="option2" autocomplete="off" checked="" value="Evening"> Evening';
+										html +='<input type="radio" name="options_end_'+date_range[i]+'" id="options_end_evening'+date_range[i]+'" autocomplete="off" checked="" value="Evening"> Evening';
 									html +='</label>';
 								}
 							html +='</div>';							
 						html += '</div>'
 						if(day_range[i]=='Sunday'){
-							html+='<th scope="row"><input class="form-control table-input" type="text" name="lunch_'+date_range[i]+'" value="'+(response.lunch_break[i] || '0')+'"/>';
+							html+='<th scope="row"><input class="form-control table-input" type="text" name="lunch_'+date_range[i]+'" id="lunch_'+date_range[i]+'"  value="'+(response.lunch_break[i] || '0')+'"/>';
 						}else{
-							html+='<th scope="row"><input class="form-control table-input" type="text" name="lunch_'+date_range[i]+'" value="'+(response.lunch_break[i] || response.lunch_break[i] == 0 ? response.lunch_break[i] : '30') +'"/>';
+							html+='<th scope="row"><input class="form-control table-input" type="text" name="lunch_'+date_range[i]+'" id="lunch_'+date_range[i]+'"  value="'+(response.lunch_break[i] || response.lunch_break[i] == 0 ? response.lunch_break[i] : '30') +'"/>';
+						}
+						if(response.start_times_hours[i] != 0 && response.start_times_minutes[i] != 0 && response.end_times_hours[i] != 0 && response.end_times_minutes[i] != 0){
+							console.log('Holiday');
+							html+=`<th scope="row" style="display:flex; justify-content:center;height: 54px;align-items:center;"><div style="margin-bottom:0 !important" class="custom-control custom-checkbox mb-5"><input type="checkbox" class="custom-control-input" id="customCheck1-1`+date_range[i]+`" onclick="toggleHoliday('`+date_range[i]+`')"><label class="custom-control-label" for="customCheck1-1`+date_range[i]+`"></label></div>`;
+						} else {
+							html+=`<th scope="row" style="display:flex; justify-content:center;height: 54px;align-items:center;"><div style="margin-bottom:0 !important" class="custom-control custom-checkbox mb-5"><input checked="" type="checkbox" class="custom-control-input" id="customCheck1-1`+date_range[i]+`" onclick="toggleHoliday('`+date_range[i]+`')"><label class="custom-control-label" for="customCheck1-1`+date_range[i]+`"></label></div>`;
 						}
 					html +='</tr>';
 					}
@@ -243,6 +250,38 @@
 					console.error('Error:', error);
 				}
 			});
+		}
+
+		function toggleHoliday(holidayDate){
+			var holiday = document.getElementById('customCheck1-1'+holidayDate).checked;
+			if(holiday){
+				document.getElementById('starting_min_'+holidayDate).value = 0;
+				document.getElementById('start_hour_'+holidayDate).value = 0;
+				document.getElementById('ending_min_'+holidayDate).value = 0;
+				document.getElementById('end_hour_'+holidayDate).value = 0;
+				document.getElementById('lunch_'+holidayDate).value = 0;
+				// document.getElementById('options_start_morning'+holidayDate).checked = true;
+				// document.getElementById('options_start_evening'+holidayDate).checked = false;
+				document.getElementById('options_end_morning'+holidayDate).checked = true;
+				// document.getElementById('options_end_evening'+holidayDate).checked = false;			
+				// document.getElementsByName('starting_min_'+holidayDate)[0].disabled = true;
+				// document.getElementsByName('start_hour_'+holidayDate)[0].disabled = true;
+				// document.getElementsByName('ending_min_'+holidayDate)[0].disabled = true;
+				// document.getElementsByName('end_hour_'+holidayDate)[0].disabled = true;
+				// document.getElementsByName('lunch_'+holidayDate)[0].disabled = true;
+			}else{
+				document.getElementById('starting_min_'+holidayDate).value = "";
+				document.getElementById('start_hour_'+holidayDate).value = "";
+				document.getElementById('ending_min_'+holidayDate).value = "";
+				document.getElementById('end_hour_'+holidayDate).value = "";
+				document.getElementById('lunch_'+holidayDate).value = "";	
+				document.getElementById('options_start_morning'+holidayDate).checked = true;
+				// document.getElementsByName('starting_min_'+holidayDate)[0].disabled = false;
+				// document.getElementsByName('start_hour_'+holidayDate)[0].disabled = false;
+				// document.getElementsByName('ending_min_'+holidayDate)[0].disabled = false;
+				// document.getElementsByName('end_hour_'+holidayDate)[0].disabled = false;
+				// document.getElementsByName('lunch_'+holidayDate)[0].disabled = false;				
+			}
 		}
 
 		function submitTimeData(){

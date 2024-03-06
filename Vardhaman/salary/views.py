@@ -185,6 +185,9 @@ class selectEmpData(APIView):
             else:
                 start_times_hours.append(None)
                 start_times_minutes.append(None)
+                end_times_hours.append(None)
+                end_times_minutes.append(None)   
+                lunch_times.append(None)             
         
         # print("here4")
         for date in date_range:
@@ -289,9 +292,12 @@ class calculateSalaryAPI(APIView):
             if lunch_times[a] == 'None':
                 lunch_times[a] = 0                        
             a += 1
-        # print(start_times)
-        # print(end_times)
-        # print(lunch_times)
+        print(start_times)
+        print(end_times)
+        print(lunch_times)
+        print(len(start_times))
+        print(len(end_times))
+        print(len(lunch_times))        
         # Get the Employee instance
         emp_name = EmployeeData.objects.get(name = name)
         a = 0
