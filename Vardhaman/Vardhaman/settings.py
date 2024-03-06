@@ -80,10 +80,10 @@ WSGI_APPLICATION = 'Vardhaman.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Vardhaman',
+        'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': '1212',
-        'HOST': 'localhost',
+        'PASSWORD': 'prajyot1212',
+        'HOST': 'database-1.cbgegom0wuf1.ap-south-1.rds.amazonaws.com',
         'PORT': '5432',
     }
 }
