@@ -373,8 +373,8 @@ class viewSalaryAPI(APIView):
             # print(time_difference)
             total_time += time_difference
             time_per_day.append(time_difference)
-            start_time.append(work_schedule.start_time)
-            end_time.append(work_schedule.end_time)
+            start_time.append(work_schedule.start_time.strftime("%H:%M"))
+            end_time.append(work_schedule.end_time.strftime("%H:%M"))
             break_time.append(work_schedule.lunch_break)
             # time_per_day[a] = 
 
