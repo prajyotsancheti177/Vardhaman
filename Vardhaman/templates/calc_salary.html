@@ -208,7 +208,7 @@
 							html +='</div>';							
 						html += '</div>'
 						html += '<th scope="row"><div style="display:flex; flex-direction:row;justify-content: space-around;">'
-								if (parseInt(response.end_times_hours[i]) < 12){
+								if (parseInt(response.end_times_hours[i]) <= 12){
 									html +=  '<input class="form-control table-input" type="text" name="end_hour_'+date_range[i]+'" id="end_hour_'+date_range[i]+'" value="'+((response.end_times_hours[i] !== null && response.end_times_hours[i] !== undefined) ? response.end_times_hours[i] : '')+'"/>';
 									html +=  '<input class="form-control table-input" type="text" name="ending_min_'+date_range[i]+'" id="ending_min_'+date_range[i]+'" value="'+((response.end_times_minutes[i] !== null && response.end_times_minutes[i] !== undefined) ? response.end_times_minutes[i] : '')+'"/>';
 									html +=  '<div class="btn-group btn-group-toggle" data-toggle="buttons">';									
