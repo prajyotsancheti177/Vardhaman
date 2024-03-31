@@ -236,11 +236,12 @@
 						}else{
 							html+='<th scope="row"><input class="form-control table-input" type="text" name="lunch_'+date_range[i]+'" id="lunch_'+date_range[i]+'"  value="'+(response.lunch_break[i] || response.lunch_break[i] == 0 ? response.lunch_break[i] : '30') +'"/>';
 						}
-						if(response.start_times_hours[i] != 0 && response.start_times_minutes[i] != 0 && response.end_times_hours[i] != 0 && response.end_times_minutes[i] != 0){
-							console.log('Holiday');
+						if(response.start_times_hours[i] > 0 || response.start_times_minutes[i] > 0 || response.end_times_hours[i] > 0 || response.end_times_minutes[i] > 0){
 							html+=`<th scope="row" style="display:flex; justify-content:center;height: 54px;align-items:center;"><div style="margin-bottom:0 !important" class="custom-control custom-checkbox mb-5"><input type="checkbox" class="custom-control-input" id="customCheck1-1`+date_range[i]+`" onclick="toggleHoliday('`+date_range[i]+`')"><label class="custom-control-label" for="customCheck1-1`+date_range[i]+`"></label></div>`;
-						} else {
+						} else if (response.start_times_hours[i] == 0 && response.start_times_minutes[i] == 0 && response.end_times_hours[i] == 0 && response.end_times_minutes[i] == 0){
 							html+=`<th scope="row" style="display:flex; justify-content:center;height: 54px;align-items:center;"><div style="margin-bottom:0 !important" class="custom-control custom-checkbox mb-5"><input checked="" type="checkbox" class="custom-control-input" id="customCheck1-1`+date_range[i]+`" onclick="toggleHoliday('`+date_range[i]+`')"><label class="custom-control-label" for="customCheck1-1`+date_range[i]+`"></label></div>`;
+						} else {
+							html+=`<th scope="row" style="display:flex; justify-content:center;height: 54px;align-items:center;"><div style="margin-bottom:0 !important" class="custom-control custom-checkbox mb-5"><input type="checkbox" class="custom-control-input" id="customCheck1-1`+date_range[i]+`" onclick="toggleHoliday('`+date_range[i]+`')"><label class="custom-control-label" for="customCheck1-1`+date_range[i]+`"></label></div>`;
 						}
 					html +='</tr>';
 					}
