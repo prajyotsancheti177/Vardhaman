@@ -17,16 +17,24 @@
             <div class="pull-left"></div>
           </div>
           <form id="register" method="post">
-			<div class="form-group row">
+            <div id="print-header" style="display:none" class="salary-header-print">
+              <div style="display:flex;width:100%;align-items:center;justify-content:center">
+                <div id="emp-name">
+                </div>
+                <div id="emp-month">
+                </div>
+              </div>    
+            </div>
+			<div class="form-group row salary-header">
                 <label class="col-sm-12 col-md-2 col-form-label">Select Employee</label>
                 <div class="col-sm-12 col-md-10" id="select-container">
                     
                 </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row salary-header">
                 <label class="col-sm-12 col-md-2 col-form-label">Month</label>
                 <div class="col-sm-12 col-md-10">
-                    <input class="form-control month-picker" placeholder="Select Month" type="text" name="month" onclick="displaySubmitButton()">
+                    <input class="form-control month-picker" id="month" placeholder="Select Month" type="text" name="month" onclick="displaySubmitButton()">
                 </div>
             </div>
 			<button type="button" id="submit-button" class="btn btn-primary btn-lg btn p-10" style="display: block;" onclick="submitForm()">Display</button>
@@ -48,24 +56,24 @@
             </table>
             <div style="display:flex;flex-direction:column">  
               <div >
-                  <label style="margin-right:177px; margin-bottom:30px">Total Time</label>
-                  <input readonly  style="padding:10px;border-radius:10px;border:1px solid grey" id="total_time" type="text" value="0"></input>
+                  <label style="margin-right:177px; margin-bottom:30px" class="salary-details-main">Total Time</label>
+                  <input readonly style="padding:10px;border-radius:10px;border:1px solid grey" id="total_time" type="text" value="0" class="salary-details"></input>
               </div>
               <div >
-                  <label style="margin-right:140px; margin-bottom:30px">Salary Per Hour</label>
-                  <input readonly style="padding:10px;border-radius:10px;border:1px solid grey" id="salary_per_hour" type="text" value="0"></input>
+                  <label style="margin-right:140px; margin-bottom:30px" class="salary-details-main">Salary Per Hour</label>
+                  <input readonly style="padding:10px;border-radius:10px;border:1px solid grey" id="salary_per_hour" type="text" value="0" class="salary-details"></input>
               </div>
               <div >
-                  <label style="margin-right:20px; margin-bottom:30px">Salary Amount Before Advance</label>
-                  <input readonly  style="padding:10px;border-radius:10px;border:1px solid grey" id="salary_amount" type="text" value="0"></input>
+                  <label style="margin-right:20px; margin-bottom:30px" class="salary-details-main">Salary Amount Before Advance</label>
+                  <input readonly  style="padding:10px;border-radius:10px;border:1px solid grey" id="salary_amount" type="text" value="0" class="salary-details"></input>
               </div>
               <div >
-                  <label style="margin-right:190px; margin-bottom:30px">Advance</label>
-                  <input readonly style="padding:10px;border-radius:10px;border:1px solid grey" id="advance" type="text" value="0" onchange="handleAdvance()"></input>
+                  <label style="margin-right:190px; margin-bottom:30px" class="salary-details-main">Advance</label>
+                  <input readonly style="padding:10px;border-radius:10px;border:1px solid grey" id="advance" type="text" value="0" onchange="handleAdvance()" class="salary-details"></input>
               </div>
               <div >
-                  <label style="margin-right:95px">Salary After Advance</label>
-                  <input readonly  style="padding:10px;border-radius:10px;border:1px solid grey" id="salary_amount_advance" type="text" value="0"></input>
+                  <label style="margin-right:95px" class="salary-details-main">Salary After Advance</label>
+                  <input readonly  style="padding:10px;border-radius:10px;border:1px solid grey" id="salary_amount_advance" type="text" value="0" class="salary-details"></input>
               </div>
             </div>
           </div>                                                
@@ -89,7 +97,7 @@
                     console.log(response);
     
                     var names = response.names;
-                    html = '<select class="custom-select col-12" name="emp_name" onclick="displaySubmitButton()">';
+                    html = '<select class="custom-select col-12" id="name" name="emp_name" onclick="displaySubmitButton()">';
                         for (var i = 0; i < names.length; i++) {
                             html+= '<option value="'+names[i]+'">'+names[i]+'</option>';
                         }
@@ -115,6 +123,9 @@
         }
 
         function submitForm() {
+
+          document.getElementById("emp-name").innerHTML = '<div style="margin-bottom:10px;padding-right:10px;font-size:25px;">'+document.getElementById("name").value+'</div>';
+          document.getElementById("emp-month").innerHTML = '<div style="margin-bottom:10px;font-size:25px;">('+document.getElementById("month").value+')<div>';
 
           document.getElementById("salary-card").style.display = "";
           document.getElementById("submit-button").style.display = "none";

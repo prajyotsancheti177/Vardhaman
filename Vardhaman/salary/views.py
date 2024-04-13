@@ -359,18 +359,19 @@ class viewSalaryAPI(APIView):
             date__month=month,
             date__year=year
         )
-
+        total_time = timedelta()
         time_per_day = []
         time_strings = []
         start_time = []
         end_time = []
         break_time = []
-        total_time = timedelta()
         for work_schedule in work_schedules:
             start_datetime = datetime.combine(datetime.today(), work_schedule.start_time)
             end_datetime = datetime.combine(datetime.today(), work_schedule.end_time)            
             time_difference = end_datetime - start_datetime - timedelta(minutes=work_schedule.lunch_break)
             # print(time_difference)
+            print("total_time",total_time)
+            print("Time Diffrence",time_difference)
             total_time += time_difference
             time_per_day.append(time_difference)
             start_time.append(work_schedule.start_time.strftime("%H:%M"))
@@ -386,7 +387,7 @@ class viewSalaryAPI(APIView):
             time_strings.append(f"{hours:02}:{minutes:02}")  # Format hours and minutes as HH:MM string
 
         # print(time_strings)
-
+        print(total_time)
         total_working_hours = int(total_time.total_seconds() // 3600)  # Convert to total hours
         remaining_seconds = total_time.total_seconds() % 3600
         total_working_minutes = int(remaining_seconds // 60) 
