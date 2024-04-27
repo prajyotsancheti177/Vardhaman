@@ -424,3 +424,27 @@ class viewSalaryAPI(APIView):
 
 
 
+
+class price_list(APIView):
+    permission_classes = [AllowAny]
+    def get(self,request):
+        all_products = PriceCalculation.objects.all()
+
+        # Serialize employee data
+        product_data = []
+        for product in all_products:
+            product_data.append({
+                'product_name': product.product_name,
+                'product_price': product.product_price
+            })
+        # print(employee_data)
+        response_data = product_data
+        return Response(response_data,status=status.HTTP_200_OK)
+
+    def post(self,request):
+        product_name = request.POST.get('product_name')
+        product_price = request.POST.get('product_price')
+        existing_product = PriceCalculation.objects.filter(Q(product_name=product_name))
+        existing_product.update(product_price=product_price)
+
+        return Response(status=status.HTTP_200_OK)

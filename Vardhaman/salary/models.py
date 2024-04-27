@@ -26,3 +26,7 @@ class EmployeeAdvance(models.Model):
     emp_name = models.ForeignKey(EmployeeData, on_delete=models.CASCADE)
     date = models.CharField(max_length=255)
     advance_amount = models.FloatField(default=0)
+
+class PriceCalculation(models.Model):
+    product_name = models.CharField(max_length=255)
+    product_price = models.FloatField(default=0)

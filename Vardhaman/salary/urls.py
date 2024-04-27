@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from . import views
-from .views import registerAPI, selectEmpData, calculateSalaryAPI, viewSalaryAPI, displayEmployee, deleteEmployee, advanceAPI, deleteAdvance
+from .views import registerAPI, selectEmpData, calculateSalaryAPI, viewSalaryAPI, displayEmployee, deleteEmployee, advanceAPI, deleteAdvance,price_list
 
 
 urlpatterns = [
@@ -18,6 +18,7 @@ urlpatterns = [
     path('add_advance', views.add_advance, name="add_advance"),
     path('advanceAPI', advanceAPI.as_view(), name="advanceAPI"),
     path('deleteAdvance', deleteAdvance.as_view(), name="deleteAdvance"),
+    path('price_list', price_list.as_view(), name="price_list"),
 
 
 ]
