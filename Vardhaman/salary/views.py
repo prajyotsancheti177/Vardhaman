@@ -441,10 +441,41 @@ class price_list(APIView):
         response_data = product_data
         return Response(response_data,status=status.HTTP_200_OK)
 
-    def post(self,request):
-        product_name = request.POST.get('product_name')
-        product_price = request.POST.get('product_price')
-        existing_product = PriceCalculation.objects.filter(Q(product_name=product_name))
-        existing_product.update(product_price=product_price)
+    def post(self, request):
+        # Get the JSON data from the request body
+        try:
+            json_data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON data provided.'}, status=400)
 
-        return Response(status=status.HTTP_200_OK)
+        # Basic validation: Ensure JSON data is a list
+        if not isinstance(json_data, list):
+            return JsonResponse({'error': 'JSON data should be a list of objects.'}, status=400)
+
+        try:
+            for item in json_data:
+                product_name = item.get('product_name')
+                product_price = item.get('product_price')
+
+                # Basic validation: Ensure product_name and product_price are provided
+                if not product_name or not product_price:
+                    return JsonResponse({'error': 'Both product_name and product_price are required.'}, status=400)
+
+                # Attempt to update the product price
+                existing_product = PriceCalculation.objects.filter(Q(product_name=product_name))
+                if existing_product.exists():
+                    existing_product.update(product_price=product_price)
+                else:
+                    # Handle case when product is not found
+                    return JsonResponse({'error': f'Product "{product_name}" not found.'}, status=404)
+
+            return JsonResponse({'success': 'Product prices updated successfully.'})
+        except Exception as e:
+            # Handle any errors that might occur during the update process
+            return JsonResponse({'error': f'Error updating product prices: {str(e)}'}, status=500)        
+
+import json
+from django.http import JsonResponse
+from django.views import View
+from django.db.models import Q
+from .models import PriceCalculation
