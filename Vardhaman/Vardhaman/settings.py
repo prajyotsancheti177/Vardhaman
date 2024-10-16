@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'salary',
     'corsheaders',
+    'calculator'
 ]
 
 MIDDLEWARE = [
@@ -144,4 +145,42 @@ CORS_ALLOWED_ORIGINS = [
 
 # Optional: Allow credentials (cookies, authorization headers, etc.)
 CORS_ALLOW_CREDENTIALS = True
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'debug.log'),
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        # Add your custom logger for your application
+        'calculator': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
 

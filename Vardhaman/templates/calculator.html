@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode Roll Price Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+
+        .calculator-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        input, select {
+            width: 95%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #007bff;
+        }
+
+        /* Add the style for the manage-products button */
+        .manage-products-btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .manage-products-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Hide WhatsApp link initially */
+        #whatsapp-link {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Button to navigate to manage-products page -->
+<a href="/calculator/manage-products" class="manage-products-btn">Manage Products</a>
+
+<div class="calculator-container" id="calculator-container">
+    <h2>Barcode Roll Price Calculator</h2>
+
+    <label for="breadth">Width (mm):</label>
+    <input type="number" id="breadth" placeholder="Enter width in mm">    
+    
+    <label for="length">Length (mm):</label>
+    <input type="number" id="length" placeholder="Enter length in mm">
+
+    <label for="num_of_label">Number Of Labels:</label>
+    <input type="number" id="num_of_label" placeholder="Enter number of labels">
+
+    <label for="rollType">Roll Type:</label>
+    <select id="rollType" onchange="updatePrice()">
+        <option disabled selected>Please select one option</option>
+    </select>
+
+    <label for="price" style="display: none;">Price Per Roll:</label>
+    <input type="number" style="display: none;" id="price" placeholder="Price will be auto-filled" readonly>    
+
+    <button onclick="calculatePrice()">Calculate</button>
+
+    <div class="result" id="result"></div>
+
+    <!-- WhatsApp Sharing Link
+    <div id="whatsapp-link">
+        <h3 style="color:brown">WhatsApp Sharing Link</h3>   
+        <a href="#" id="whatsapp-share" target="_blank">Share to WhatsApp</a>
+    </div> -->
+</div>
+
+<!-- Include html2canvas library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+    // Pass the Django product data context as a JS object
+    const productData = {{ product_data|safe }};
+
+    // Populate the dropdown dynamically with product names
+    const rollTypeSelect = document.getElementById('rollType');
+    for (let productName in productData) {
+        const option = document.createElement('option');
+        option.value = productName;
+        option.textContent = productName;
+        rollTypeSelect.appendChild(option);
+    }
+
+    // Update the price input when a roll type is selected
+    function updatePrice() {
+        const selectedProduct = rollTypeSelect.value;
+        const price = productData[selectedProduct];
+        document.getElementById('price').value = price;
+    }
+    
+    function calculatePrice() {
+        // Get the input values
+        const length = parseFloat(document.getElementById('length').value);
+        const breadth = parseFloat(document.getElementById('breadth').value);
+        const num_of_label = parseFloat(document.getElementById('num_of_label').value);
+        const rollType = document.getElementById('rollType').value;
+        const price = parseFloat(document.getElementById('price').value);
+
+        // Check if the inputs are valid
+        if (isNaN(length) || isNaN(breadth) || isNaN(price)) {
+            document.getElementById('result').innerText = "Please enter valid values.";
+            return;
+        }
+
+        // Calculate the price
+        const totalPrice = (length * breadth) / 625 * num_of_label * price;
+
+        // Display the result
+        document.getElementById('result').innerText = `Requirenment: ${breadth}mm x ${length}mm x ${num_of_label} rolls\n Cost: ₹${totalPrice.toFixed(2)} per roll`;
+
+        // // Show WhatsApp link after calculation
+        // document.getElementById('whatsapp-link').style.display = 'block';
+
+        // // Take screenshot and send to server
+        // html2canvas(document.getElementById('calculator-container')).then(function(canvas) {
+        //     // Convert the canvas to a data URL (base64 string)
+        //     const imageData = canvas.toDataURL('image/png');
+
+        //     // Send the image data to the server
+        //     fetch('/calculator/save-screenshot/', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'X-CSRFToken': '{{ csrf_token }}'
+        //         },
+        //         body: JSON.stringify({ image: imageData })
+        //     })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         if (data.success) {
+        //             // WhatsApp sharing link with the image URL
+        //             const whatsappLink = `https://wa.me/?text=Check%20out%20this%20calculation!%20Here%20is%20the%20image:%20https://vardhamanpaper.com/${data.image_url}`;
+        //             document.getElementById('whatsapp-share').setAttribute('href', whatsappLink);
+        //         }
+        //     })
+        //     .catch(err => {
+        //         console.error('Error saving screenshot:', err);
+        //     });
+        // });
+    }
+
+</script>
+
+</body>
+</html>
+

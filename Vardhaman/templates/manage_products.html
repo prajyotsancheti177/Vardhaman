@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Product Types</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+
+        .product-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        input, button {
+            padding: 8px;
+            margin: 5px 0;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Add the style for the manage-products button */
+        .manage-products-btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .manage-products-btn:hover {
+            background-color: #0056b3;
+        }        
+    </style>
+</head>
+<body>
+
+
+<a href="/calculator" class="manage-products-btn">Back to calculator</a>    
+
+<div class="product-container">
+    <h2>Manage Product Types</h2>
+
+    <!-- Add new product -->
+    <h3>Add New Product</h3>
+    <label for="newProductName">Product Name:</label>
+    <input type="text" id="newProductName" placeholder="Enter product name">
+    <label for="newProductPrice">Product Price:</label>
+    <input type="number" id="newProductPrice" placeholder="Enter product price">
+    <button onclick="addProduct()">Add Product</button>
+
+    <!-- Update and delete products -->
+    <h3>Existing Products</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Product Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="productTableBody">
+            <!-- Dynamic content will be populated here -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const productData = {{ product_data|safe }};
+
+    // Populate the table with existing products
+    function loadProducts() {
+        const tableBody = document.getElementById('productTableBody');
+        tableBody.innerHTML = ''; // Clear any previous rows
+
+        productData.forEach(product => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${product.product_name}</td>
+                <td>
+                    <input type="number" value="${product.product_price}" id="price_${product.id}">
+                </td>
+                <td>
+                    <button onclick="updateProduct(${product.id})">Update</button>
+                    <button onclick="deleteProduct(${product.id})">Delete</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Add a new product
+    function addProduct() {
+        const productName = document.getElementById('newProductName').value;
+        const productPrice = document.getElementById('newProductPrice').value;
+
+        if (!productName || !productPrice) {
+            alert('Please fill out both fields.');
+            return;
+        }
+
+        fetch('', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'add',
+                product_name: productName,
+                product_price: productPrice
+            })
+        }).then(response => response.json())
+          .then(data => {
+              alert(data.success || data.error);
+              window.location.reload();  // Reload the page to see the updated list
+          });
+    }
+
+    // Update a product's price
+    function updateProduct(productId) {
+        const productPrice = document.getElementById(`price_${productId}`).value;
+
+        if (!productPrice) {
+            alert('Please enter a valid price.');
+            return;
+        }
+
+        fetch('', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'update',
+                product_id: productId,
+                product_price: productPrice
+            })
+        }).then(response => response.json())
+          .then(data => {
+              alert(data.success || data.error);
+              window.location.reload();  // Reload the page to see the updated prices
+          });
+    }
+
+    // Delete a product
+    function deleteProduct(productId) {
+        if (!confirm('Are you sure you want to delete this product?')) {
+            return;
+        }
+
+        fetch('', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'delete',
+                product_id: productId
+            })
+        }).then(response => response.json())
+          .then(data => {
+              alert(data.success || data.error);
+              window.location.reload();  // Reload the page to see the updated list
+          });
+    }
+
+    // Load the products when the page is loaded
+    window.onload = loadProducts;
+</script>
+
+</body>
+</html>

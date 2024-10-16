@@ -423,8 +423,6 @@ class viewSalaryAPI(APIView):
         return Response(response_data)
 
 
-
-
 class price_list(APIView):
     permission_classes = [AllowAny]
     def get(self,request):
@@ -473,9 +471,3 @@ class price_list(APIView):
         except Exception as e:
             # Handle any errors that might occur during the update process
             return JsonResponse({'error': f'Error updating product prices: {str(e)}'}, status=500)        
-
-import json
-from django.http import JsonResponse
-from django.views import View
-from django.db.models import Q
-from .models import PriceCalculation
